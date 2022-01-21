@@ -20,7 +20,7 @@ plc::plc( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint&
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
 	bSizer5->SetMinSize( wxSize( 800,200 ) ); 
-	m_staticText15 = new wxStaticText( this, wxID_ANY, wxT("CSV文件路径"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_staticText15 = new wxStaticText( this, wxID_ANY, wxT(".csv/mat文件路径"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_staticText15->Wrap( -1 );
 	m_staticText15->SetFont( wxFont( 18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("宋体") ) );
 	
@@ -28,6 +28,19 @@ plc::plc( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint&
 	
 	m_filePicker1 = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
 	bSizer5->Add( m_filePicker1, 0, wxALL|wxEXPAND, 5 );
+	
+	wxWrapSizer* wSizer1;
+	wSizer1 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
+	
+	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("过滤"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText3->Wrap( -1 );
+	wSizer1->Add( m_staticText3, 0, wxALL, 5 );
+	
+	m_textCtrl4 = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	wSizer1->Add( m_textCtrl4, 1, wxALL|wxEXPAND, 5 );
+	
+	
+	bSizer5->Add( wSizer1, 0, wxEXPAND, 5 );
 	
 	m_scrolledWindow2 = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
 	m_scrolledWindow2->SetScrollRate( 5, 5 );
@@ -70,6 +83,7 @@ plc::plc( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint&
 	// Connect Events
 	m_filePicker1->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( plc::OnFileChanged ), NULL, this );
 	m_filePicker1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( plc::SetFocus ), NULL, this );
+	m_textCtrl4->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( plc::OnTextFilter ), NULL, this );
 	m_checkList3->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( plc::Box ), NULL, this );
 	m_checkList3->Connect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( plc::BoxDClick ), NULL, this );
 	m_checkList3->Connect( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, wxCommandEventHandler( plc::BoxToggled ), NULL, this );
@@ -82,6 +96,7 @@ plc::~plc()
 	// Disconnect Events
 	m_filePicker1->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( plc::OnFileChanged ), NULL, this );
 	m_filePicker1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( plc::SetFocus ), NULL, this );
+	m_textCtrl4->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( plc::OnTextFilter ), NULL, this );
 	m_checkList3->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( plc::Box ), NULL, this );
 	m_checkList3->Disconnect( wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler( plc::BoxDClick ), NULL, this );
 	m_checkList3->Disconnect( wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, wxCommandEventHandler( plc::BoxToggled ), NULL, this );

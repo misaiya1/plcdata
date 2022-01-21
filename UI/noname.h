@@ -17,6 +17,8 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/filepicker.h>
+#include <wx/textctrl.h>
+#include <wx/wrapsizer.h>
 #include <wx/checklst.h>
 #include <wx/sizer.h>
 #include <wx/scrolwin.h>
@@ -39,6 +41,8 @@ class plc : public wxFrame
 	protected:
 		wxStaticText* m_staticText15;
 		wxFilePickerCtrl* m_filePicker1;
+		wxStaticText* m_staticText3;
+		wxTextCtrl* m_textCtrl4;
 		wxScrolledWindow* m_scrolledWindow2;
 		wxCheckListBox* m_checkList3;
 		wxMenuBar* m_menubar1;
@@ -47,6 +51,7 @@ class plc : public wxFrame
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnFileChanged( wxFileDirPickerEvent& event ) { event.Skip(); }
 		virtual void SetFocus( wxFocusEvent& event ) { event.Skip(); }
+		virtual void OnTextFilter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void Box( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BoxDClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BoxToggled( wxCommandEvent& event ) { event.Skip(); }

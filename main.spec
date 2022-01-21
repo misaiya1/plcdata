@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['E:\\WorkSpace\\test\\pythonProject\\cyf\\SCSG - cyf\\py\\plcdata'],
+             pathex=[],
              binaries=[],
              datas=[],
              hiddenimports=[],
