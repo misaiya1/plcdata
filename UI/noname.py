@@ -26,15 +26,22 @@ class plc ( wx.Frame ):
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 		
 		bSizer5.SetMinSize( wx.Size( 800,200 ) ) 
-		self.m_staticText15 = wx.StaticText( self, wx.ID_ANY, u".csv/mat文件路径", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
+		self.m_staticText15 = wx.StaticText( self, wx.ID_ANY, u"1.浏览csv/mat文件路径", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
 		self.m_staticText15.Wrap( -1 )
 		
 		self.m_staticText15.SetFont( wx.Font( 18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "宋体" ) )
 		
 		bSizer5.Add( self.m_staticText15, 0, wx.ALL|wx.EXPAND, 5 )
 		
-		self.m_filePicker1 = wx.FilePickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.m_filePicker1 = wx.FilePickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"1.浏览文件", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		bSizer5.Add( self.m_filePicker1, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText151 = wx.StaticText( self, wx.ID_ANY, u"2.勾选信号", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
+		self.m_staticText151.Wrap( -1 )
+		
+		self.m_staticText151.SetFont( wx.Font( 18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "宋体" ) )
+		
+		bSizer5.Add( self.m_staticText151, 0, wx.ALL|wx.EXPAND, 5 )
 		
 		wSizer1 = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 		
@@ -45,6 +52,33 @@ class plc ( wx.Frame ):
 		
 		self.m_textCtrl4 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		wSizer1.Add( self.m_textCtrl4, 1, wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText32 = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText32.Wrap( -1 )
+		
+		wSizer1.Add( self.m_staticText32, 0, wx.ALL, 5 )
+		
+		self.m_staticText31 = wx.StaticText( self, wx.ID_ANY, u"x_min", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText31.Wrap( -1 )
+		
+		wSizer1.Add( self.m_staticText31, 0, wx.ALL, 5 )
+		
+		self.m_textCtrl_xmin = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer1.Add( self.m_textCtrl_xmin, 0, wx.ALL, 5 )
+		
+		self.m_staticText311 = wx.StaticText( self, wx.ID_ANY, u"x_max", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText311.Wrap( -1 )
+		
+		wSizer1.Add( self.m_staticText311, 0, wx.ALL, 5 )
+		
+		self.m_textCtrl_xmax = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer1.Add( self.m_textCtrl_xmax, 0, wx.ALL, 5 )
+		
+		self.m_button1 = wx.Button( self, wx.ID_ANY, u"3.过滤x轴范围", wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer1.Add( self.m_button1, 0, wx.ALL, 5 )
+		
+		self.m_button_FFT = wx.Button( self, wx.ID_ANY, u"4.对该时段FFT", wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer1.Add( self.m_button_FFT, 0, wx.ALL, 5 )
 		
 		
 		bSizer5.Add( wSizer1, 0, wx.EXPAND, 5 )
@@ -88,6 +122,8 @@ class plc ( wx.Frame ):
 		self.m_filePicker1.Bind( wx.EVT_FILEPICKER_CHANGED, self.OnFileChanged )
 		self.m_filePicker1.Bind( wx.EVT_SET_FOCUS, self.SetFocus )
 		self.m_textCtrl4.Bind( wx.EVT_TEXT, self.OnTextFilter )
+		self.m_button1.Bind( wx.EVT_BUTTON, self.OnButtonClick )
+		self.m_button_FFT.Bind( wx.EVT_BUTTON, self.OnButtonClick_FFT )
 		self.m_checkList3.Bind( wx.EVT_LISTBOX, self.Box )
 		self.m_checkList3.Bind( wx.EVT_LISTBOX_DCLICK, self.BoxDClick )
 		self.m_checkList3.Bind( wx.EVT_CHECKLISTBOX, self.BoxToggled )
@@ -106,6 +142,12 @@ class plc ( wx.Frame ):
 		event.Skip()
 	
 	def OnTextFilter( self, event ):
+		event.Skip()
+	
+	def OnButtonClick( self, event ):
+		event.Skip()
+	
+	def OnButtonClick_FFT( self, event ):
 		event.Skip()
 	
 	def Box( self, event ):

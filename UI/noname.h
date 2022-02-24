@@ -18,13 +18,14 @@
 #include <wx/settings.h>
 #include <wx/filepicker.h>
 #include <wx/textctrl.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/icon.h>
+#include <wx/button.h>
 #include <wx/wrapsizer.h>
 #include <wx/checklst.h>
 #include <wx/sizer.h>
 #include <wx/scrolwin.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
 #include <wx/menu.h>
 #include <wx/frame.h>
 
@@ -41,8 +42,16 @@ class plc : public wxFrame
 	protected:
 		wxStaticText* m_staticText15;
 		wxFilePickerCtrl* m_filePicker1;
+		wxStaticText* m_staticText151;
 		wxStaticText* m_staticText3;
 		wxTextCtrl* m_textCtrl4;
+		wxStaticText* m_staticText32;
+		wxStaticText* m_staticText31;
+		wxTextCtrl* m_textCtrl_xmin;
+		wxStaticText* m_staticText311;
+		wxTextCtrl* m_textCtrl_xmax;
+		wxButton* m_button1;
+		wxButton* m_button_FFT;
 		wxScrolledWindow* m_scrolledWindow2;
 		wxCheckListBox* m_checkList3;
 		wxMenuBar* m_menubar1;
@@ -52,6 +61,8 @@ class plc : public wxFrame
 		virtual void OnFileChanged( wxFileDirPickerEvent& event ) { event.Skip(); }
 		virtual void SetFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void OnTextFilter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnButtonClick_FFT( wxCommandEvent& event ) { event.Skip(); }
 		virtual void Box( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BoxDClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BoxToggled( wxCommandEvent& event ) { event.Skip(); }
