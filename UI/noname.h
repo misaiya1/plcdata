@@ -17,6 +17,7 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/filepicker.h>
+#include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -24,7 +25,6 @@
 #include <wx/button.h>
 #include <wx/wrapsizer.h>
 #include <wx/checklst.h>
-#include <wx/sizer.h>
 #include <wx/scrolwin.h>
 #include <wx/menu.h>
 #include <wx/frame.h>
@@ -43,6 +43,7 @@ class plc : public wxFrame
 		wxStaticText* m_staticText15;
 		wxFilePickerCtrl* m_filePicker1;
 		wxStaticText* m_staticText151;
+		wxStaticText* m_staticText1511;
 		wxStaticText* m_staticText3;
 		wxTextCtrl* m_textCtrl4;
 		wxStaticText* m_staticText32;
@@ -59,7 +60,9 @@ class plc : public wxFrame
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnFileChanged( wxFileDirPickerEvent& event ) { event.Skip(); }
-		virtual void SetFocus( wxFocusEvent& event ) { event.Skip(); }
+		virtual void m_filePicker1OnKillFocus( wxFocusEvent& event ) { event.Skip(); }
+		virtual void m_filePicker1OnLeftDown( wxMouseEvent& event ) { event.Skip(); }
+		virtual void m_filePicker1OnSetFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void OnTextFilter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnButtonClick_FFT( wxCommandEvent& event ) { event.Skip(); }
@@ -72,7 +75,7 @@ class plc : public wxFrame
 	
 	public:
 		
-		plc( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("B&R buffer plot"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 800,600 ), long style = wxCAPTION|wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		plc( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Sewdap_Lite_Ver1"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 800,600 ), long style = wxCAPTION|wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 		
 		~plc();
 	

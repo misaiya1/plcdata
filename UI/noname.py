@@ -17,7 +17,7 @@ import wx.xrc
 class plc ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"B&R buffer plot", pos = wx.DefaultPosition, size = wx.Size( 800,600 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Sewdap_Lite_Ver1", pos = wx.DefaultPosition, size = wx.Size( 800,600 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
@@ -36,12 +36,24 @@ class plc ( wx.Frame ):
 		self.m_filePicker1 = wx.FilePickerCtrl( self, wx.ID_ANY, wx.EmptyString, u"1.浏览文件", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		bSizer5.Add( self.m_filePicker1, 0, wx.ALL|wx.EXPAND, 5 )
 		
-		self.m_staticText151 = wx.StaticText( self, wx.ID_ANY, u"2.勾选信号", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
+		self.m_staticText151 = wx.StaticText( self, wx.ID_ANY, u"当前文件:", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_LEFT )
 		self.m_staticText151.Wrap( -1 )
 		
-		self.m_staticText151.SetFont( wx.Font( 18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "宋体" ) )
+		self.m_staticText151.SetFont( wx.Font( 12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "宋体" ) )
 		
-		bSizer5.Add( self.m_staticText151, 0, wx.ALL|wx.EXPAND, 5 )
+		bSizer5.Add( self.m_staticText151, 0, wx.EXPAND|wx.ALL, 5 )
+		
+		gSizer2 = wx.GridSizer( 0, 1, 0, 0 )
+		
+		self.m_staticText1511 = wx.StaticText( self, wx.ID_ANY, u"2.勾选信号", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTER_HORIZONTAL )
+		self.m_staticText1511.Wrap( -1 )
+		
+		self.m_staticText1511.SetFont( wx.Font( 18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "宋体" ) )
+		
+		gSizer2.Add( self.m_staticText1511, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		
+		bSizer5.Add( gSizer2, 0, wx.EXPAND, 5 )
 		
 		wSizer1 = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 		
@@ -120,7 +132,9 @@ class plc ( wx.Frame ):
 		
 		# Connect Events
 		self.m_filePicker1.Bind( wx.EVT_FILEPICKER_CHANGED, self.OnFileChanged )
-		self.m_filePicker1.Bind( wx.EVT_SET_FOCUS, self.SetFocus )
+		self.m_filePicker1.Bind( wx.EVT_KILL_FOCUS, self.m_filePicker1OnKillFocus )
+		self.m_filePicker1.Bind( wx.EVT_LEFT_DOWN, self.m_filePicker1OnLeftDown )
+		self.m_filePicker1.Bind( wx.EVT_SET_FOCUS, self.m_filePicker1OnSetFocus )
 		self.m_textCtrl4.Bind( wx.EVT_TEXT, self.OnTextFilter )
 		self.m_button1.Bind( wx.EVT_BUTTON, self.OnButtonClick )
 		self.m_button_FFT.Bind( wx.EVT_BUTTON, self.OnButtonClick_FFT )
@@ -138,7 +152,13 @@ class plc ( wx.Frame ):
 	def OnFileChanged( self, event ):
 		event.Skip()
 	
-	def SetFocus( self, event ):
+	def m_filePicker1OnKillFocus( self, event ):
+		event.Skip()
+	
+	def m_filePicker1OnLeftDown( self, event ):
+		event.Skip()
+	
+	def m_filePicker1OnSetFocus( self, event ):
 		event.Skip()
 	
 	def OnTextFilter( self, event ):

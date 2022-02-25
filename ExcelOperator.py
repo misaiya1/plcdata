@@ -65,7 +65,30 @@ def plt_font_set():
     plt.rc ('font', **font)  # 步骤一（设置字体的更多属性）
     plt.rc ('axes', unicode_minus=False)  # 步骤二（解决坐标轴负数的负号显示问题）
 
+class FileDropTarget(wx.FileDropTarget):
+    def __init__(self, window, parent):
+        wx.FileDropTarget.__init__(self)
+        self.window = window
+        self.parent = parent  # self.parent makes it available to the whole class
 
+    def OnDropFiles(self,  x,  y, fileNames):
+        fileNames2 = str(fileNames)
+        print ('fileNames', fileNames, type(fileNames))
+        try:
+            self.window.SetValue(str(fileNames2))
+        except:
+            fileNames2 = eval (repr (fileNames2).replace ('\\\\', '\\'))
+            fileNames2 = fileNames2[2:-2]
+            self.window.SetPath (fileNames2)
+            self.parent.OnFileChanged(None)
+            # self.window.SetLabel ('abc')
+            self.window.UpdateTextCtrlFromPicker ()
+
+        print ('fileNames2', fileNames2)
+
+
+
+###main
 class MyFrame (plc):
     locale.getlocale ()
     ''' 创建输出路径  '''
@@ -77,7 +100,21 @@ class MyFrame (plc):
 
         wx.Frame.SetBackgroundColour (self, 'Write')  # ???
         font1 = wx.Font (22, wx.MODERN, wx.NORMAL, wx.NORMAL)
+        dropTarget = FileDropTarget(self.m_filePicker1, self)
+        self.m_filePicker1.SetDropTarget( dropTarget )
+        #self.m_filePicker1.Bind (wx.EVT_MOVE, self.OnFileChanged)
 
+    def m_filePicker1OnKillFocus(self, event):
+        print('m_filePicker1OnKillFocus')
+        event.Skip ()
+
+    def m_filePicker1OnLeftDown(self, event):
+        print ('m_filePicker1OnLeftDown')
+        event.Skip ()
+
+    def m_filePicker1OnSetFocus(self, event):
+        print ('m_filePicker1OnSetFocus')
+        event.Skip ()
 
     def OnFileChanged(self, event):
         global data1, ItemInFile
@@ -93,6 +130,8 @@ class MyFrame (plc):
         CSV_Path = self.m_filePicker1.GetPath ()
         print (type (CSV_Path))
         print ((CSV_Path))
+
+        self.m_staticText151.SetLabel("当前文件："+CSV_Path)
 
         if CSV_Path[-3:] == 'csv':
             try:
@@ -256,7 +295,7 @@ class MyFrame (plc):
             ItemInFile = np.delete (ItemInFile, ind)
         except:
             pass
-        ItemInFile = np.delete (ItemInFile, ind)
+
         self.m_checkList3.AppendItems (ItemInFile)
         self.m_checkList3.Update ()
 
@@ -279,6 +318,12 @@ class MyFrame (plc):
         self.m_checkList3.AppendItems (ItemInFile2)
         try:
             self.m_checkList3.SetCheckedStrings (showItems & set (ItemInFile2))
+            temp = self.m_checkList3.GetCount ()
+            for i in range (temp):
+                self.m_checkList3.SetItemBackgroundColour (i, (255, 255, 255, 255))
+            temp = self.m_checkList3.GetCheckedItems ()
+            for i in temp:
+                self.m_checkList3.SetItemBackgroundColour (i, (215, 252, 3, 255))
         except:
             pass
 
@@ -299,6 +344,15 @@ class MyFrame (plc):
         ##### 重写 #####
         # 打勾了哪些
         checkedItems = self.m_checkList3.GetCheckedStrings ()
+        temp = self.m_checkList3.GetCount()
+        for i in range(temp):
+            self.m_checkList3.SetItemBackgroundColour (i,(255,255,255,255))
+        temp = self.m_checkList3.GetCheckedItems()
+        for i in temp:
+            self.m_checkList3.SetItemBackgroundColour (i,(215,252,3,255))
+
+
+
         print ('checkedItems')
         print (checkedItems, type (checkedItems))
         # 打勾有什么变化
@@ -375,14 +429,14 @@ class MyFrame (plc):
 
     def mOnMenuSelection2(self, event):
         dlg = wx.MessageDialog (None,
-                                "1.支持csv或mat文件格式\n2.csv文件格式，第二行为表头，第三行开始为数据。\n3.绘图数据可多选。",
+                                "1.支持csv或mat文件格式\n2.csv文件格式，第二行为表头，第三行开始为数据。\n3.绘图数据可多选。\n4.新增word分解功能。",
                                 u"确认", wx.YES_DEFAULT | wx.ICON_QUESTION)
         if dlg.ShowModal () == wx.ID_YES:
             self.Close (True)
         dlg.Destroy ()
 
     def mOnMenuSelection1(self, event):
-        dlg = wx.MessageDialog (None, u"上海电气风电集团 电气COE\n版本:V1.1", u"确认", wx.YES_DEFAULT | wx.ICON_QUESTION)
+        dlg = wx.MessageDialog (None, u"上海电气风电集团 电气COE\n版本:V1.0\n日期:2022/02/25", u"确认", wx.YES_DEFAULT | wx.ICON_QUESTION)
         if dlg.ShowModal () == wx.ID_YES:
             self.Close (True)
         dlg.Destroy ()
@@ -424,6 +478,22 @@ class MyFrame (plc):
     def OnButtonClick_FFT(self, event):
         print ("FFT")
         from FFTtest import myfft
+        try:
+            xmin = float (self.m_textCtrl_xmin.GetValue ())
+        except:
+            xmin = -50000
+
+        try:
+            xmax = float (self.m_textCtrl_xmax.GetValue ())
+        except:
+            xmax = 50000
+        print ([xmin, xmax])
+
+        global data2
+        data2 = data1
+        data2 = data2[data1['time_d_float'] <= xmax]
+        data2 = data2[data2['time_d_float'] >= xmin]
+
         try:
             data3 = data2
         except:

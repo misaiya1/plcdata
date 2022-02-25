@@ -29,11 +29,23 @@ plc::plc( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint&
 	m_filePicker1 = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, wxT("1.浏览文件"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
 	bSizer5->Add( m_filePicker1, 0, wxALL|wxEXPAND, 5 );
 	
-	m_staticText151 = new wxStaticText( this, wxID_ANY, wxT("2.勾选信号"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_staticText151 = new wxStaticText( this, wxID_ANY, wxT("当前文件:"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_staticText151->Wrap( -1 );
-	m_staticText151->SetFont( wxFont( 18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("宋体") ) );
+	m_staticText151->SetFont( wxFont( 12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("宋体") ) );
 	
-	bSizer5->Add( m_staticText151, 0, wxALL|wxEXPAND, 5 );
+	bSizer5->Add( m_staticText151, 0, wxEXPAND|wxALL, 5 );
+	
+	wxGridSizer* gSizer2;
+	gSizer2 = new wxGridSizer( 0, 1, 0, 0 );
+	
+	m_staticText1511 = new wxStaticText( this, wxID_ANY, wxT("2.勾选信号"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
+	m_staticText1511->Wrap( -1 );
+	m_staticText1511->SetFont( wxFont( 18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("宋体") ) );
+	
+	gSizer2->Add( m_staticText1511, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
+	
+	
+	bSizer5->Add( gSizer2, 0, wxEXPAND, 5 );
 	
 	wxWrapSizer* wSizer1;
 	wSizer1 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
@@ -112,7 +124,9 @@ plc::plc( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint&
 	
 	// Connect Events
 	m_filePicker1->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( plc::OnFileChanged ), NULL, this );
-	m_filePicker1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( plc::SetFocus ), NULL, this );
+	m_filePicker1->Connect( wxEVT_KILL_FOCUS, wxFocusEventHandler( plc::m_filePicker1OnKillFocus ), NULL, this );
+	m_filePicker1->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( plc::m_filePicker1OnLeftDown ), NULL, this );
+	m_filePicker1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( plc::m_filePicker1OnSetFocus ), NULL, this );
 	m_textCtrl4->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( plc::OnTextFilter ), NULL, this );
 	m_button1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( plc::OnButtonClick ), NULL, this );
 	m_button_FFT->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( plc::OnButtonClick_FFT ), NULL, this );
@@ -127,7 +141,9 @@ plc::~plc()
 {
 	// Disconnect Events
 	m_filePicker1->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( plc::OnFileChanged ), NULL, this );
-	m_filePicker1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( plc::SetFocus ), NULL, this );
+	m_filePicker1->Disconnect( wxEVT_KILL_FOCUS, wxFocusEventHandler( plc::m_filePicker1OnKillFocus ), NULL, this );
+	m_filePicker1->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( plc::m_filePicker1OnLeftDown ), NULL, this );
+	m_filePicker1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( plc::m_filePicker1OnSetFocus ), NULL, this );
 	m_textCtrl4->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( plc::OnTextFilter ), NULL, this );
 	m_button1->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( plc::OnButtonClick ), NULL, this );
 	m_button_FFT->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( plc::OnButtonClick_FFT ), NULL, this );
