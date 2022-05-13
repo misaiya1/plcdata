@@ -65,30 +65,29 @@ def plt_font_set():
     plt.rc ('font', **font)  # 步骤一（设置字体的更多属性）
     plt.rc ('axes', unicode_minus=False)  # 步骤二（解决坐标轴负数的负号显示问题）
 
-class FileDropTarget(wx.FileDropTarget):
+
+class FileDropTarget (wx.FileDropTarget):
     def __init__(self, window, parent):
-        wx.FileDropTarget.__init__(self)
+        wx.FileDropTarget.__init__ (self)
         self.window = window
         self.parent = parent  # self.parent makes it available to the whole class
 
-    def OnDropFiles(self,  x,  y, fileNames):
-        fileNames2 = str(fileNames)
-        print ('fileNames', fileNames, type(fileNames))
+    def OnDropFiles(self, x, y, fileNames):
+        fileNames2 = str (fileNames)
+        print ('fileNames', fileNames, type (fileNames))
         try:
-            self.window.SetValue(str(fileNames2))
+            self.window.SetValue (str (fileNames2))
         except:
             fileNames2 = eval (repr (fileNames2).replace ('\\\\', '\\'))
             fileNames2 = fileNames2[2:-2]
             self.window.SetPath (fileNames2)
-            self.parent.OnFileChanged(None)
+            self.parent.OnFileChanged (None)
             # self.window.SetLabel ('abc')
             self.window.UpdateTextCtrlFromPicker ()
 
         print ('fileNames2', fileNames2)
 
 
-
-###main
 class MyFrame (plc):
     locale.getlocale ()
     ''' 创建输出路径  '''
@@ -100,12 +99,12 @@ class MyFrame (plc):
 
         wx.Frame.SetBackgroundColour (self, 'Write')  # ???
         font1 = wx.Font (22, wx.MODERN, wx.NORMAL, wx.NORMAL)
-        dropTarget = FileDropTarget(self.m_filePicker1, self)
-        self.m_filePicker1.SetDropTarget( dropTarget )
-        #self.m_filePicker1.Bind (wx.EVT_MOVE, self.OnFileChanged)
+        dropTarget = FileDropTarget (self.m_filePicker1, self)
+        self.m_filePicker1.SetDropTarget (dropTarget)
+        # self.m_filePicker1.Bind (wx.EVT_MOVE, self.OnFileChanged)
 
     def m_filePicker1OnKillFocus(self, event):
-        print('m_filePicker1OnKillFocus')
+        print ('m_filePicker1OnKillFocus')
         event.Skip ()
 
     def m_filePicker1OnLeftDown(self, event):
@@ -131,7 +130,7 @@ class MyFrame (plc):
         print (type (CSV_Path))
         print ((CSV_Path))
 
-        self.m_staticText151.SetLabel("当前文件："+CSV_Path)
+        self.m_staticText151.SetLabel ("当前文件：" + CSV_Path)
 
         if CSV_Path[-3:] == 'csv':
             try:
@@ -140,14 +139,18 @@ class MyFrame (plc):
             #     data1 = pd.read_csv(CSV_Path, skiprows=1, encoding = 'gb2312')
             except:
                 data1 = pd.read_csv (CSV_Path, skiprows=1, encoding="ISO-8859-1")
-
-            # 将Timestamp 改成 TimeStamp
             try:
                 data1['TimeStamp'] = data1['Timestamp']
             except:
                 pass
 
-            print (data1['gGridP'].head (10))
+            # try:
+            #     data1 = pd.read_csv (CSV_Path)
+            # # except:
+            # #     data1 = pd.read_csv(CSV_Path, skiprows=1, encoding = 'gb2312')
+            # except:
+            #     data1 = pd.read_csv (CSV_Path, encoding="ISO-8859-1")
+            # # 将Timestamp 改成 TimeStamp
 
             try:
                 data1['TestTorque'] = data1['gGridP'] / data1['gCovGenSpd'] * 30 / 3.1415926
@@ -157,40 +160,54 @@ class MyFrame (plc):
 
             # 填充空白
             data1 = data1.fillna (-1)
-            data2 = data1
+            print (data1.head (5))
 
             n = len (data1['TimeStamp'])
             print (n)
             # ==========ErrorPoint========== 去除
             print ('finding')
+            ind = []
             for i in range (n):
                 temp = data1['TimeStamp'][i]
-                # print(temp)
-                if "ErrorPoint" in temp:
-                    print ('find error time')
-                    data1 = data1.drop (i)
-                    errorPoint = i
-                    print (errorPoint)
+                print (temp)
+                if temp == -1:
+                    # data1 = data1.drop (i)
+                    ind.append (i)
 
+                try:
+                    if "ErrorPoint" in temp:
+                        print ('find error time')
+                        ind.append (i)
+                        errorPoint = i
+                        print (errorPoint)
+                except:
+                    pass
 
             # 获取时间序列
+            print ('ind =')
+            print (ind)
+            data1 = data1.drop (ind)
+            print (data1.head (10))
+
             print (data1['TimeStamp'][0])
             print (type (data1['TimeStamp'][0]))
-            t0 = pd.to_datetime (data1['TimeStamp'][0], format='%Y-%m-%d/%H:%M:%S.%f')
-            t1 = pd.to_datetime (data1['TimeStamp'][1], format='%Y-%m-%d/%H:%M:%S.%f')
+            try:
+                t0 = pd.to_datetime (data1['TimeStamp'][0], format='%Y-%m-%d/%H:%M:%S.%f')
+            except:
+                t0 = pd.to_datetime (data1['TimeStamp'][0], format='%Y_%m_%d_%H:%M:%S:%f')
 
             print (t0)
             print (type (t0))
-
-
-            data1['temp1'] = pd.to_datetime (data1['TimeStamp'], format='%Y-%m-%d/%H:%M:%S.%f', errors='coerce')
+            #data1['temp1'] = pd.to_datetime (data1['TimeStamp'], format='%Y-%m-%d/%H:%M:%S.%f')
+            try:
+                data1['temp1'] = pd.to_datetime (data1['TimeStamp'], format='%Y-%m-%d/%H:%M:%S.%f', errors='coerce')
+            except:
+                data1['temp1'] = pd.to_datetime (data1['TimeStamp'], format='%Y_%m_%d_%H:%M:%S:%f', errors='coerce')
             data1 = data1.dropna ()
 
             data1['temp2'] = pd.to_timedelta (data1['temp1'] - t0)
             print (data1['temp2'].head ())
             data1['time_d_float'] = data1['temp2'].dt.total_seconds ()
-
-
 
             ################### 更新勾选项 ####################
 
@@ -243,23 +260,23 @@ class MyFrame (plc):
         temp = np.array ([i.find ('Word') for i in ItemInFile])
         ItemInFileFilter = ItemInFile[temp > 0]
         for item in ItemInFileFilter:
-            data1[item + r'.bit0'] = np.bitwise_and (data1[item].astype (np.uint16), 1)/1+0.008
-            data1[item + r'.bit1'] = np.bitwise_and (data1[item].astype (np.uint16), 2)/2+0.007
-            data1[item + r'.bit2'] = np.bitwise_and (data1[item].astype (np.uint16), 4)/4+0.006
-            data1[item + r'.bit3'] = np.bitwise_and (data1[item].astype (np.uint16), 8)/8+0.005
-            data1[item + r'.bit4'] = np.bitwise_and (data1[item].astype (np.uint16), 16)/16+0.004
-            data1[item + r'.bit5'] = np.bitwise_and (data1[item].astype (np.uint16), 32)/32+0.003
-            data1[item + r'.bit6'] = np.bitwise_and (data1[item].astype (np.uint16), 64)/64+0.002
-            data1[item + r'.bit7'] = np.bitwise_and (data1[item].astype (np.uint16), 128)/128+0.001
+            data1[item + r'.bit0'] = np.bitwise_and (data1[item].astype (np.uint16), 1) / 1 + 0.008
+            data1[item + r'.bit1'] = np.bitwise_and (data1[item].astype (np.uint16), 2) / 2 + 0.007
+            data1[item + r'.bit2'] = np.bitwise_and (data1[item].astype (np.uint16), 4) / 4 + 0.006
+            data1[item + r'.bit3'] = np.bitwise_and (data1[item].astype (np.uint16), 8) / 8 + 0.005
+            data1[item + r'.bit4'] = np.bitwise_and (data1[item].astype (np.uint16), 16) / 16 + 0.004
+            data1[item + r'.bit5'] = np.bitwise_and (data1[item].astype (np.uint16), 32) / 32 + 0.003
+            data1[item + r'.bit6'] = np.bitwise_and (data1[item].astype (np.uint16), 64) / 64 + 0.002
+            data1[item + r'.bit7'] = np.bitwise_and (data1[item].astype (np.uint16), 128) / 128 + 0.001
 
-            data1[item + r'.bit8'] = np.bitwise_and (data1[item].astype (np.uint16), 256)/256-0.008
-            data1[item + r'.bit9'] = np.bitwise_and (data1[item].astype (np.uint16), 512)/512-0.007
-            data1[item + r'.bit10'] = np.bitwise_and (data1[item].astype (np.uint16), 1024)/1024-0.006
-            data1[item + r'.bit11'] = np.bitwise_and (data1[item].astype (np.uint16), 2048)/2048-0.005
-            data1[item + r'.bit12'] = np.bitwise_and (data1[item].astype (np.uint16), 4096)/4096-0.004
-            data1[item + r'.bit13'] = np.bitwise_and (data1[item].astype (np.uint16), 8192)/8192-0.003
-            data1[item + r'.bit14'] = np.bitwise_and (data1[item].astype (np.uint16), 16384)/16384-0.002
-            data1[item + r'.bit15'] = np.bitwise_and (data1[item].astype (np.uint16), 32768)/32768-0.001
+            data1[item + r'.bit8'] = np.bitwise_and (data1[item].astype (np.uint16), 256) / 256 - 0.008
+            data1[item + r'.bit9'] = np.bitwise_and (data1[item].astype (np.uint16), 512) / 512 - 0.007
+            data1[item + r'.bit10'] = np.bitwise_and (data1[item].astype (np.uint16), 1024) / 1024 - 0.006
+            data1[item + r'.bit11'] = np.bitwise_and (data1[item].astype (np.uint16), 2048) / 2048 - 0.005
+            data1[item + r'.bit12'] = np.bitwise_and (data1[item].astype (np.uint16), 4096) / 4096 - 0.004
+            data1[item + r'.bit13'] = np.bitwise_and (data1[item].astype (np.uint16), 8192) / 8192 - 0.003
+            data1[item + r'.bit14'] = np.bitwise_and (data1[item].astype (np.uint16), 16384) / 16384 - 0.002
+            data1[item + r'.bit15'] = np.bitwise_and (data1[item].astype (np.uint16), 32768) / 32768 - 0.001
 
         ################### 更新勾选项 ####################
 
@@ -267,7 +284,6 @@ class MyFrame (plc):
         ItemInFile = data1.columns.values
         print (type (ItemInFile))
         # 删除
-
 
         try:
             ind = np.where (ItemInFile == 'TimeStamp')
@@ -299,8 +315,6 @@ class MyFrame (plc):
         self.m_checkList3.AppendItems (ItemInFile)
         self.m_checkList3.Update ()
 
-
-
     def OnTextFilter(self, event):
         print ('OnTextFilter')
         fWord = self.m_textCtrl4.GetValue ()
@@ -308,7 +322,7 @@ class MyFrame (plc):
         print (fWord)
 
         ItemInFile2 = [x for x in ItemInFile if
-                       (str.lower(fWord) in str.lower(x))]
+                       (str.lower (fWord) in str.lower (x))]
         print ('ItemInFile2')
         print (ItemInFile2)
 
@@ -344,14 +358,12 @@ class MyFrame (plc):
         ##### 重写 #####
         # 打勾了哪些
         checkedItems = self.m_checkList3.GetCheckedStrings ()
-        temp = self.m_checkList3.GetCount()
-        for i in range(temp):
-            self.m_checkList3.SetItemBackgroundColour (i,(255,255,255,255))
-        temp = self.m_checkList3.GetCheckedItems()
+        temp = self.m_checkList3.GetCount ()
+        for i in range (temp):
+            self.m_checkList3.SetItemBackgroundColour (i, (255, 255, 255, 255))
+        temp = self.m_checkList3.GetCheckedItems ()
         for i in temp:
-            self.m_checkList3.SetItemBackgroundColour (i,(215,252,3,255))
-
-
+            self.m_checkList3.SetItemBackgroundColour (i, (215, 252, 3, 255))
 
         print ('checkedItems')
         print (checkedItems, type (checkedItems))
@@ -436,7 +448,8 @@ class MyFrame (plc):
         dlg.Destroy ()
 
     def mOnMenuSelection1(self, event):
-        dlg = wx.MessageDialog (None, u"上海电气风电集团 电气COE\n版本:V1.0\n日期:2022/02/25", u"确认", wx.YES_DEFAULT | wx.ICON_QUESTION)
+        dlg = wx.MessageDialog (None, u"上海电气风电集团 电气COE\n版本:V2.0\n日期:2022/04/11", u"确认",
+                                wx.YES_DEFAULT | wx.ICON_QUESTION)
         if dlg.ShowModal () == wx.ID_YES:
             self.Close (True)
         dlg.Destroy ()
@@ -506,6 +519,8 @@ class MyFrame (plc):
             min_diff = 0.02
         if (min_diff < 0.012) and (min_diff > 0.008):
             min_diff = 0.01
+        if min_diff < 0:
+            min_diff = 0.01
         print ("min_diff = ", min_diff)
 
         temp_end_time = data3['time_d_float'].iloc[-1]
@@ -558,7 +573,6 @@ class MyFrame (plc):
         plt.tight_layout ()
         plt.draw ()
         plt.show ()
-
 
 
 '''end of file'''
